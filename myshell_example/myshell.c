@@ -26,6 +26,7 @@ typedef int bool;
 
 // Define functions declared in myshell.h here
 
+// TODO add number of args to if statements
 int main(int argc, char *argv[])
 {
     // The path to the README file
@@ -42,16 +43,16 @@ int main(int argc, char *argv[])
     // Perform an infinite loop getting command input from users
     while (fgets(buffer, BUFFER_LEN, stdin) != NULL)
     {
-        // Removes trailing newline character from buffer
-        if (buffer[strlen(buffer) - 1] == '\n') {
-            buffer[strlen(buffer) - 1] = '\0';
-        }
+        // The delimiter to seperate the tokens
+        char delimiter[] = " \t\r\n\v\f";
         
         // Perform string tokenization to get the command and argument
         // The character array that will hold the buffer arguments after string tokenization
         char* buffer_arg;
-        buffer_arg = strtok(buffer, " ");
+        buffer_arg = strtok(buffer, delimiter);
         
+        // The number of arguments given. This does not include the command.
+        int num_args = 0;
         // Used to assign the first value into the command variable
         bool first_arg = true;
         // Loop through the arguments
@@ -66,11 +67,16 @@ int main(int argc, char *argv[])
             }
             else
             {
-                // TODO make it so multiple arguments work
-                strcpy(arg, buffer_arg);
+                // Add current argument to arg list
+                strcat(arg, buffer_arg);
+                // Add a space to make sure arguments are seperate
+                strcat(arg , " ");
+                
+                // Increment the number of arguments given
+                num_args++;
             }
             // Go to the next argument
-            buffer_arg = strtok(NULL, " ");
+            buffer_arg = strtok(NULL, delimiter);
         }
 
         // Check the command and execute the operations for each command
@@ -114,7 +120,7 @@ int main(int argc, char *argv[])
         // Unsupported command
         else
         {
-            fputs("Unsupported command, use help to display the manual\n", stderr);
+            printf("Unsupported command, use help to display the manual\n");
         }
     }
     return EXIT_SUCCESS;
